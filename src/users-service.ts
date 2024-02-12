@@ -1,44 +1,68 @@
 import { v4 } from 'uuid';
 import { NewUser, User } from './users-types';
+import { DbService } from './db-service';
+import { getUserIdFromUrl, getPostData, validateNewUserData } from './helpers';
 import users from '../data/users.json';
 
-export const getUsersList = async (): Promise<User[] | []> => users || [];
+class UsersService {
+  dbService;
 
-export const getUserById = async (userId: string): Promise<User> => {
-  if (!userId) {
-    throw new Error('Sorry, incorrect ID!', { cause: 400 });
+  constructor() {
+    this.dbService = new DbService();
   }
 
-  const userById = users.find((user) => user.id === userId);
-
-  if (!userById) {
-    throw new Error('Sorry, user not found!', { cause: 404 });
+  async getUsersList(): Promise<User[] | []> {
+    return await this.dbService.getUsersList();
   }
-  return userById;
-};
 
-export const createUser = async (user: NewUser): Promise<void> => {
-  const userId: string = v4();
-  const { name, age, hobbies } = user;
-
-  const newUser: User = { id: userId, name, age, hobbies };
-  users.push(newUser);
-};
-
-export const updateUser = async (userId: string, newUserData: Record<string, string | number>): Promise<User> => {
-  const updatedUser: User = await getUserById(userId);
-
-  for (const userProp in newUserData) {
-    if (updatedUser[userProp] !== newUserData[userProp]) {
-      updatedUser[userProp] = newUserData[userProp];
+  async getUserById(userId: string): Promise<User> {
+    if (!userId) {
+      throw new Error('Sorry, incorrect ID!', { cause: 400 });
     }
-  }
 
-  return updatedUser;
+    const userById: User | null = await this.dbService.getUserById(userId);
+    console.log(66666, userById);
+
+    if (!userById) {
+      throw new Error('Sorry, user not found!', { cause: 404 });
+    }
+    return userById;
+  };
+
+  async createUser(userData: NewUser): Promise<User> {
+    // const isDataValid: NewUser = await getPostData(userData);
+    await validateNewUserData(userData);
+
+    const userId: string = v4();
+    const { name, age, hobbies } = userData;
+
+    const newUser: User = { id: userId, name, age, hobbies };
+
+    // console.log(users);
+    return await this.dbService.createUser(newUser);
+  };
+
+  async updateUser(userId: string, newUserData: Record<string, string | number>): Promise<User> {
+
+    console.log(99999);
+    const updatedUser: User = await this.getUserById(userId);
+
+    await validateNewUserData(newUserData);
+
+    for (const userProp in newUserData) {
+      if (updatedUser[userProp] !== newUserData[userProp]) {
+        updatedUser[userProp] = newUserData[userProp];
+      }
+    }
+
+    return await this.dbService.updateUser(updatedUser);
+  };
+
+  async deleteUser(userId: string): Promise<string> {
+    const deletedUser: User = await this.getUserById(userId);
+
+    return await this.dbService.deleteUser(userId);
+  };
 };
 
-export const deleteUser = async (userId: string): Promise<void> => {
-  const deletedUser: User = await getUserById(userId);
-
-  [...users].splice(users.indexOf(deletedUser), 1);
-};
+export default new UsersService();

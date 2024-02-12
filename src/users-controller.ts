@@ -1,91 +1,95 @@
-import * as UserService from './users-service';
+import usersService from './users-service';
 import { getUserIdFromUrl, getPostData } from './helpers';
 import { User, NewUser } from './users-types';
 
-// GET /users
-export const getUsersList = async (_: any, res: any): Promise<void> => {
-  try {
-    const usersList: User[] = await UserService.getUsersList();
-    console.log(usersList);
+export class UsersController {
+  constructor() { }
 
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.write(JSON.stringify(usersList));
-    res.end();
-  }
-  catch (err: any) {
-    console.log(err);
-    res.end();
-  }
-};
+  // GET /users
+  async getUsersList(_: any, res: any): Promise<void> {
+    try {
+      const usersList: User[] = await usersService.getUsersList();
 
-// GET /users/:id
-export const getUserById = async (req: any, res: any): Promise<void> => {
-  try {
-    const userId: string = getUserIdFromUrl(req.url);
-    const user: User = await UserService.getUserById(userId);
-
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.write(JSON.stringify(user));
-    res.end();
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.write(JSON.stringify(usersList));
+      res.end();
+    }
+    catch (err: any) {
+      console.log(err);
+      res.end();
+    }
   }
-  catch (err: any) {
-    res.statusCode = 404;
-    res.setHeader('Content-Type', 'text/plain');
-    console.log(err);
-    res.end('User not found');
-  }
-};
 
-// POST /users
-export const createUser = async (req: any, res: any): Promise<void> => {
-  try {
-    const newUser: NewUser = await getPostData(req);
-    await UserService.createUser(newUser);
+  // GET /users/:id
+  async getUserById(req: any, res: any): Promise<void> {
+    try {
+      const userId: string = getUserIdFromUrl(req.url);
+      console.log(555, userId);
 
-    res.statusCode = 201;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(`User created! ${JSON.stringify(newUser)}`);
-  }
-  catch (err: any) {
-    console.log(err);
-    res.end();
-  }
-};
+      const user: User = await usersService.getUserById(userId);
 
-// PATCH /users/:id
-export const updateUser = async (req: any, res: any): Promise<void> => {
-  try {
-    const userId: string = getUserIdFromUrl(req.url);
-    const newUserData: NewUser = await getPostData(req);
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.write(JSON.stringify(user));
+      res.end();
+    }
+    catch (err: any) {
+      res.statusCode = err.cause;
+      res.end(err.message);
+    }
+  };
 
-    await UserService.updateUser(userId, newUserData);
+  // POST /users
+  async createUser(req: any, res: any): Promise<void> {
+    try {
+      const newUserData: NewUser = await getPostData(req);
+      const user: User = await usersService.createUser(newUserData);
 
-    res.statusCode = 200;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(`User ${userId} updated! ${JSON.stringify(newUserData)}`);
-  }
-  catch (err: any) {
-    console.log(err);
-    res.end();
-  }
-};
+      res.statusCode = 201;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(`User created! ${JSON.stringify(user)}`);
+    }
+    catch (err: any) {
+      res.statusCode = err.cause;
+      res.end(err.message);
+    }
+  };
 
-// DELETE /users/:id
-export const deleteUser = async (req: any, res: any): Promise<void> => {
-  try {
-    const userId: string = getUserIdFromUrl(req.url);
-    await UserService.deleteUser(userId);
+  // PUT /users/:id
+  async updateUser(req: any, res: any): Promise<void> {
+    try {
+      const userId: string = getUserIdFromUrl(req.url);
+      const newUserData: NewUser = await getPostData(req);
 
-    res.statusCode = 204;
-    res.setHeader('Content-Type', 'text/plain');
-    res.end(`User ${userId} deleted!`);
-  }
-  catch (err: any) {
-    res.statusCode = 404;
-    res.setHeader('Content-Type', 'text/plain');
-    console.log(err);
-    res.end('User not found');
-  }
+      const user: User = await usersService.updateUser(userId, newUserData);
+
+      console.log(222, user);
+
+
+      res.statusCode = 200;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(`User ${userId} updated! ${JSON.stringify(user)}`);
+    }
+    catch (err: any) {
+      res.statusCode = err.cause;
+      res.end(err.message);
+    }
+  };
+
+  // DELETE /users/:id
+  async deleteUser(req: any, res: any): Promise<void> {
+    try {
+      const userId: string = getUserIdFromUrl(req.url);
+      await usersService.deleteUser(userId);
+
+      res.statusCode = 204;
+      res.setHeader('Content-Type', 'text/plain');
+      res.end(`User ${userId} deleted!`);
+    }
+    catch (err: any) {
+      res.statusCode = err.cause;
+      res.end(err.message);
+    }
+  };
 };

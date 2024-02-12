@@ -30,7 +30,12 @@ const getData = async (req: any): Promise<NewUser> => {
   }
 };
 
-const validateNewUserData = async (newUser: NewUser): Promise<void> => {
+export const getPostData = async (req: any): Promise<NewUser> => {
+  const userData = await getData(req);
+  return userData;
+};
+
+export const validateNewUserData = async (newUser: NewUser): Promise<void> => {
   try {
     const { name, age, hobbies } = newUser;
     if (!name || !age || !hobbies) {
@@ -42,10 +47,3 @@ const validateNewUserData = async (newUser: NewUser): Promise<void> => {
     throw new Error('Something went wrong. Please, try again');
   }
 };
-
-export const getPostData = async (req: any): Promise<NewUser> => {
-  const userData = await getData(req);
-  await validateNewUserData(userData);
-
-  return userData;
-}
