@@ -1,0 +1,6 @@
+{
+  "watch": ["src/*.ts", "src/**/*.ts"],
+  "ext": "ts",
+  "ignore": ["*.test.ts"],
+  "exec": "ts-node --esm ./src/app.ts"
+}

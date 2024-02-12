@@ -1,0 +1,9 @@
+# package directories
+node_modules
+
+# testing
+coverage
+
+#env
+.env
+.DS_Store
