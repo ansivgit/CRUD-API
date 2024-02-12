@@ -1,11 +1,11 @@
 {
-  "name": "RSS_NodeJS_2024Q1",
+  "name": "rss_nodejs_2024q1_crud_api",
   "version": "1.0.0",
   "description": "NodeJS RSS 2024Q1 training course",
   "main": "",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon ./src/app.ts"
+    "start": "nodemon"
   },
   "repository": {
     "type": "git",
@@ -25,6 +25,7 @@
     "typescript": "^5.3.3"
   },
   "dependencies": {
+    "dotenv": "^16.4.2",
     "uuid": "^9.0.1"
   }
 }

@@ -21,9 +21,8 @@
   },
   "types": ["node"],
   "include": [
+    "src/*.ts",
     "src/**/*.ts",
-    "src/services/users-service.ts",
-    "src/controllers/users-routes.ts",
     "src/app.ts"
   ]
 }
