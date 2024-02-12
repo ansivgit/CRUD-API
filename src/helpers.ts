@@ -19,13 +19,13 @@ const getData = async (req: any): Promise<NewUser> => {
         body += chunk.toString();
       })
       .on('end', () => {
-        console.log(`Received Data: ${body}`);
+        console.info(`Received Data: ${body}`);
       });
 
     return JSON.parse(body);
   }
   catch (err: any) {
-    console.log(err);
+    console.info(err);
     throw new Error('Something went wrong. Please, try again');
   }
 };
@@ -43,7 +43,7 @@ export const validateNewUserData = async (newUser: NewUser): Promise<void> => {
     }
   }
   catch (err: any) {
-    console.log(err);
+    console.info(err);
     throw new Error('Something went wrong. Please, try again');
   }
 };

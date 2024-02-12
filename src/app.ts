@@ -36,14 +36,15 @@ const server = http.createServer((req: any, res: any) => {
   else if (req.method === 'DELETE') {
     usersController.deleteUser(req, res);
   }
+  else if (res.statusCode === 500) {
+    res.end('Something went wrong. Please, try again');
+  }
   else {
     res.statusCode = 404;
-    // res.setHeader('Content-Type', 'text/plain');
-    // res.end('Incorrect URL');
     res.end();
   }
 });
 
 server.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.info(`Server is running on port ${PORT}`);
 });

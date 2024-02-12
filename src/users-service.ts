@@ -21,16 +21,14 @@ class UsersService {
     }
 
     const userById: User | null = await this.dbService.getUserById(userId);
-    console.log(66666, userById);
-
     if (!userById) {
       throw new Error('Sorry, user not found!', { cause: 404 });
     }
+
     return userById;
   };
 
   async createUser(userData: NewUser): Promise<User> {
-    // const isDataValid: NewUser = await getPostData(userData);
     await validateNewUserData(userData);
 
     const userId: string = v4();
@@ -38,13 +36,10 @@ class UsersService {
 
     const newUser: User = { id: userId, name, age, hobbies };
 
-    // console.log(users);
     return await this.dbService.createUser(newUser);
   };
 
   async updateUser(userId: string, newUserData: Record<string, string | number>): Promise<User> {
-
-    console.log(99999);
     const updatedUser: User = await this.getUserById(userId);
 
     await validateNewUserData(newUserData);

@@ -46,6 +46,6 @@ export class DbService {
     const newList = this.list.filter((user) => user.id !== userId);
     this.list = newList;
     this.sendList();
-    return `Entity id = ${userId} is deleted`;
+    return `User ${userId} is deleted`;
   }
 };
